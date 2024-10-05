@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "current-version=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)" >> $GITHUB_OUTPUT
       - name: Build jar
-        run: mvn --file pom.xml package
+        run: mvn --settings maven-settings.xml --file pom.xml package
       - name: Build Container image
         run: |
           docker build . --file Dockerfile --tag $IMAGE:${{ steps.package-version.outputs.current-version }}
