@@ -24,8 +24,8 @@ jobs:
       - name: Build jar
         env:
           GITHUB_USERNAME: ${{ github.actor }}
-          # Organization-wide token enabling access to other private repositories for dependencies
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Account-wide token enabling access to other private repositories for dependencies
+          GITHUB_TOKEN: ${{ secrets.GPR_TOKEN }}
         run: mvn --settings maven-settings.xml --file pom.xml package
       - name: Build Container image
         run: |
