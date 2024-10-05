@@ -1,0 +1,37 @@
+name: Publish GHCR package
+
+on:
+  workflow_dispatch:
+
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch source code
+        uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Get package version
+        id: package-version
+        run: |
+          echo "current-version=$(mvn help:evaluate -Dexpression="project.version" -q -DforceStdout)" >> $GITHUB_OUTPUT
+      - name: Build jar
+        run: mvn --file pom.xml package
+      - name: Build Container image
+        run: |
+          docker build . --file Dockerfile --tag $IMAGE:${{ steps.package-version.outputs.current-version }}
+          docker tag $IMAGE:${{ steps.package-version.outputs.current-version }} $IMAGE:latest
+      - name: Log into GitHub Container Registry
+        run: |
+          # Local token with full access limited to this repository
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Push image to GitHub Container Registry
+        run: |
+          docker push $IMAGE:${{ steps.package-version.outputs.current-version }}
+          docker push $IMAGE:latest
