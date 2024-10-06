@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: ghcr.io/takayoshi24/encryption-api
+  IMAGE: ghcr.io/${{ github.repository }}
 
 permissions:
   packages: write
