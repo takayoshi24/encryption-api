@@ -6,6 +6,10 @@ on:
 env:
   IMAGE: ghcr.io/${{ github.repository }}
 
+permissions:
+  packages: read
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
