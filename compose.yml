@@ -4,9 +4,9 @@ services:
     ports:
       - 8081:5432
     environment:
-      - POSTGRES_PASSWORD=x135531x
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=encryption_app_data
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?error}
+      POSTGRES_USER: ${DB_USER:?error}
+      POSTGRES_DB: encryption_app_data
     networks:
       - encryption_app_network
 
@@ -16,6 +16,11 @@ services:
       - 8080:8080
     depends_on:
       - postgres
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:?error}
+      DB_USER: ${DB_USER:?error}
+      DB_URL: ${DB_URL:?error}
+      APP_PORT: 8080
     networks:
       - encryption_app_network
 
